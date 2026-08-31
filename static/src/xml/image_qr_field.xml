@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="libra_web_image_qr.ImageField" owl="1">
+        <div class="o_image_qr_field d-inline-block position-relative opacity-trigger-hover">
+            <div t-attf-class="position-absolute d-flex justify-content-between w-100 bottom-0 opacity-0 opacity-100-hover {{isMobile ? 'o_mobile_controls' : ''}}" aria-atomic="true" t-att-style="sizeStyle">
+                <t t-if="!props.readonly">
+                    <div class="d-flex">
+                        <FileUploader
+                            acceptedFileExtensions="props.acceptedFileExtensions"
+                            t-key="props.record.resId"
+                            onUploaded.bind="onFileUploaded"
+                            type="'image'">
+                            <t t-set-slot="toggler">
+                                <button class="o_select_file_button btn btn-light border-0 rounded-circle m-1 p-1" data-tooltip="Editar" aria-label="Editar">
+                                    <i class="fa fa-pencil fa-fw"/>
+                                </button>
+                            </t>
+                        </FileUploader>
+                        <div class="o_image_qr_control position-relative" t-on-mouseenter="showQr">
+                            <button type="button" class="o_image_qr_button btn btn-light border-0 rounded-circle m-1 p-1" data-tooltip="Cargar desde el teléfono" aria-label="Cargar desde el teléfono">
+                                <i t-att-class="qrState.loading ? 'fa fa-spinner fa-spin fa-fw' : 'fa fa-qrcode fa-fw'"/>
+                            </button>
+                            <div t-if="qrState.qrUrl" class="o_image_qr_popover">
+                                <img t-att-src="qrState.qrUrl" alt="Código QR para cargar imagen"/>
+                                <small>Escanee para tomar o cargar una foto</small>
+                            </div>
+                        </div>
+                        <button type="button" class="o_image_qr_refresh_button btn btn-light border-0 rounded-circle m-1 p-1" data-tooltip="Actualizar imagen" aria-label="Actualizar imagen" t-on-click="refreshImage">
+                            <i class="fa fa-refresh fa-fw"/>
+                        </button>
+                    </div>
+                    <button t-if="props.value and state.isValid" class="o_clear_file_button btn btn-light border-0 rounded-circle m-1 p-1" data-tooltip="Borrar" aria-label="Borrar" t-on-click="onFileRemove">
+                        <i class="fa fa-trash-o fa-fw"/>
+                    </button>
+                </t>
+            </div>
+            <img
+                class="img img-fluid"
+                alt="Archivo de imagen"
+                t-att-src="this.getUrl(props.previewImage or props.name)"
+                t-att-name="props.name"
+                t-att-height="props.height"
+                t-att-width="props.width"
+                t-att-style="sizeStyle"
+                t-on-error.stop="onLoadFailed"
+                t-att-data-tooltip-template="hasTooltip and tooltipAttributes.template"
+                t-att-data-tooltip-info="hasTooltip and tooltipAttributes.info"
+                t-att-data-tooltip-delay="hasTooltip and props.zoomDelay"/>
+        </div>
+    </t>
+</templates>

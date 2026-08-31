@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+
+# Tests and tooling
+.coverage
+.coverage.*
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+
+# Virtual environments
+.env
+.venv/
+env/
+venv/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Odoo runtime files
+*.log
+filestore/
+sessions/
+
+# JavaScript dependencies and generated assets
+node_modules/
+*.min.js
+*.min.css
+*.map

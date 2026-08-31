@@ -1,0 +1,29 @@
+.o_image_qr_field {
+    .o_image_qr_popover {
+        position: absolute;
+        z-index: 1080;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        width: 190px;
+        padding: 10px;
+        transform: translateX(-50%);
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        background: $white;
+        box-shadow: 0 5px 18px rgba($black, 0.2);
+        color: $body-color;
+        text-align: center;
+
+        img {
+            display: block;
+            width: 168px;
+            height: 168px;
+            margin: 0 auto 5px;
+        }
+
+        small {
+            display: block;
+            line-height: 1.25;
+        }
+    }
+}

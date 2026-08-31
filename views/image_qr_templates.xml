@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="image_upload_page" name="Carga móvil de imagen">
+        <html lang="es">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Cargar imagen</title>
+                <style>
+                    * { box-sizing: border-box; }
+                    body { margin: 0; padding: 24px; background: #f4f5f7; color: #212529; font-family: system-ui, sans-serif; }
+                    main { max-width: 480px; margin: 8vh auto 0; padding: 28px; background: white; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.10); text-align: center; }
+                    h1 { margin: 0 0 10px; font-size: 1.55rem; }
+                    p { color: #5f6368; line-height: 1.45; }
+                    input { display: block; width: 100%; margin: 24px 0; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; }
+                    button { width: 100%; border: 0; border-radius: 8px; padding: 14px; background: #714b67; color: white; font-size: 1rem; font-weight: 600; }
+                    button:disabled { cursor: wait; opacity: .75; }
+                    .spinner { display: inline-block; width: 18px; height: 18px; margin-right: 8px; border: 2px solid rgba(255,255,255,.45); border-top-color: white; border-radius: 50%; vertical-align: -4px; animation: spin .75s linear infinite; }
+                    @keyframes spin { to { transform: rotate(360deg); } }
+                    .success { color: #198754; }
+                    .error { color: #dc3545; }
+                </style>
+            </head>
+            <body>
+                <main>
+                    <t t-if="success">
+                        <h1 class="success">Imagen cargada</h1>
+                        <p>Ya puede cerrar esta ventana. La imagen se actualizará automáticamente en Odoo.</p>
+                    </t>
+                    <t t-elif="not upload_token._is_available()">
+                        <h1>Enlace no disponible</h1>
+                        <p>El código QR venció o ya fue utilizado. Genere uno nuevo desde Odoo.</p>
+                    </t>
+                    <t t-else="">
+                        <h1>Cargar imagen</h1>
+                        <p>Puede elegir una foto existente o tomar una nueva con la cámara.</p>
+                        <p t-if="error" class="error"><t t-esc="error"/></p>
+                        <form id="image-upload-form" method="post" enctype="multipart/form-data">
+                            <input type="file" name="image" accept="image/jpeg,image/png,image/gif,image/webp" required="required"/>
+                            <button id="image-upload-button" type="submit">Guardar imagen</button>
+                        </form>
+                        <script>
+                            document.getElementById("image-upload-form").addEventListener("submit", function () {
+                                var button = document.getElementById("image-upload-button");
+                                button.disabled = true;
+                                button.innerHTML = '<span class="spinner"></span>Cargando imagen…';
+                            });
+                        </script>
+                    </t>
+                </main>
+            </body>
+        </html>
+    </template>
+</odoo>
