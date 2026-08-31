@@ -2,12 +2,12 @@ import secrets
 from datetime import timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 
 class ImageUploadToken(models.Model):
     _name = "libra.image.upload.token"
-    _description = "Enlace temporal para cargar una imagen"
+    _description = "Enlace para cargar una imagen"
     _order = "create_date desc"
 
     token = fields.Char(required=True, readonly=True, index=True, copy=False)
@@ -46,25 +46,18 @@ class ImageUploadToken(models.Model):
             ("res_id", "=", record.id),
             ("field_name", "=", field_name),
             ("uploaded", "=", False),
-            ("expires_at", ">", fields.Datetime.now()),
         ], limit=1)
         if existing_token:
             return existing_token._upload_result()
-
-        self.search([
-            ("create_uid", "=", self.env.uid),
-            ("model_name", "=", model_name),
-            ("res_id", "=", record.id),
-            ("field_name", "=", field_name),
-            ("uploaded", "=", False),
-        ]).unlink()
 
         upload_token = self.create({
             "token": secrets.token_urlsafe(32),
             "model_name": model_name,
             "res_id": record.id,
             "field_name": field_name,
-            "expires_at": fields.Datetime.now() + timedelta(minutes=15),
+            # Conservado por compatibilidad con instalaciones anteriores. Los
+            # enlaces no vencen por tiempo: sólo se invalidan después de usarse.
+            "expires_at": fields.Datetime.now() + timedelta(days=36500),
         })
         return upload_token._upload_result()
 
@@ -85,18 +78,14 @@ class ImageUploadToken(models.Model):
         ], limit=1)
         return {"uploaded": bool(upload_token.uploaded)}
 
-    @api.autovacuum
-    def _gc_expired_tokens(self):
-        self.search([("expires_at", "<", fields.Datetime.now())]).unlink()
-
     def _is_available(self):
         self.ensure_one()
-        return not self.uploaded and self.expires_at >= fields.Datetime.now()
+        return not self.uploaded
 
     def _write_image(self, image_base64):
         self.ensure_one()
         if not self._is_available():
-            raise AccessError(_("Este enlace de carga venció o ya fue utilizado."))
+            raise ValidationError(_("Este enlace ya fue utilizado."))
         model = self.env[self.model_name] if self.model_name in self.env else None
         field = model._fields.get(self.field_name) if model is not None else None
         record = model.browse(self.res_id).exists() if model is not None else model

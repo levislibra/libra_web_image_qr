@@ -53,7 +53,7 @@ class ImageQrUploadController(http.Controller):
         if request.httprequest.method == "POST":
             image = request.httprequest.files.get("image")
             if not upload_token._is_available():
-                error = "Este enlace venció o ya fue utilizado."
+                error = "Este enlace ya fue utilizado. Genere un nuevo QR desde Odoo."
             elif not image or not image.filename:
                 error = "Seleccione una imagen o tome una foto."
             elif image.mimetype not in ALLOWED_MIMETYPES:

@@ -28,8 +28,8 @@
                         <p>Ya puede cerrar esta ventana. La imagen se actualizará automáticamente en Odoo.</p>
                     </t>
                     <t t-elif="not upload_token._is_available()">
-                        <h1>Enlace no disponible</h1>
-                        <p>El código QR venció o ya fue utilizado. Genere uno nuevo desde Odoo.</p>
+                        <h1>Enlace utilizado</h1>
+                        <p>Este código QR ya fue utilizado. Genere uno nuevo desde Odoo para volver a cargar una imagen.</p>
                     </t>
                     <t t-else="">
                         <h1>Cargar imagen</h1>

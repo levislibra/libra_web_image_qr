@@ -14,8 +14,9 @@ No es necesario modificar las vistas existentes.
 - Actualiza automáticamente la imagen mediante el bus de notificaciones de Odoo.
 - No realiza consultas periódicas al servidor.
 - Oculta los controles de carga QR cuando el campo es de solo lectura.
-- Reutiliza el mismo QR mientras el enlace continúa vigente.
-- Genera enlaces aleatorios, de un solo uso y con una vigencia de 15 minutos.
+- Genera enlaces QR de un solo uso, sin vencimiento temporal.
+- Invalida el enlace inmediatamente después de una carga exitosa.
+- Genera un QR nuevo cuando se necesita volver a reemplazar la imagen.
 - Valida el contenido, formato y tamaño del archivo recibido.
 - Muestra un indicador de carga y evita envíos duplicados desde el teléfono.
 
@@ -78,6 +79,22 @@ puerto gevent configurado en Odoo.
 
 ## Uso
 
+### 1. Generar y escanear el QR
+
+Al posicionar el cursor sobre el icono QR se muestra el código correspondiente
+al campo de imagen:
+
+![Código QR dentro del widget de imagen](static/description/image_qr_widget.png)
+
+### 2. Seleccionar o tomar una fotografía
+
+Después de escanear el código, el teléfono abre la página de carga. Desde allí
+se puede elegir una imagen existente o utilizar la cámara:
+
+![Página móvil para cargar una imagen](static/description/image_qr_mobile_upload.jpeg)
+
+### 3. Guardar y actualizar la imagen
+
 1. Abrir un registro guardado que tenga un campo con `widget="image"`.
 2. Posicionar el cursor sobre el icono QR.
 3. Escanear el código desde el teléfono.
@@ -85,7 +102,8 @@ puerto gevent configurado en Odoo.
 5. Pulsar **Guardar imagen**.
 
 Al finalizar, Odoo recibe una notificación y vuelve a cargar la imagen. El botón
-de actualización puede utilizarse como alternativa manual.
+de actualización puede utilizarse como alternativa manual. Después de una carga
+exitosa, el QR queda invalidado; al solicitarlo nuevamente se genera otro enlace.
 
 Los registros nuevos deben guardarse antes de generar un QR, ya que el enlace
 necesita un modelo, un identificador de registro y un campo de destino.
@@ -96,13 +114,13 @@ necesita un modelo, un identificador de registro y un campo de destino.
 - Los usuarios internos sólo pueden consultar sus propios tokens.
 - El QR contiene un token aleatorio de alta entropía y no expone directamente
   el modelo, registro ni campo de destino.
-- La carga pública sólo es válida mientras el token no haya vencido ni sido usado.
-- Después de una carga exitosa, el token queda invalidado.
-- Los tokens vencidos se eliminan mediante el proceso de autovacuum de Odoo.
+- Los enlaces no vencen por tiempo, pero sólo admiten una carga exitosa.
+- Después de guardar una imagen, el token queda invalidado y no puede reutilizarse.
 - El archivo se verifica como una imagen real antes de almacenarlo.
 
-Quien posea un enlace vigente puede cargar una imagen en el campo autorizado.
-Por ese motivo, no se deben publicar ni compartir códigos QR fuera del flujo previsto.
+Mientras no haya sido utilizado, quien posea el enlace puede reemplazar la imagen
+del campo autorizado. Por ese motivo, el QR debe tratarse como una credencial
+privada y no debe publicarse ni compartirse fuera del flujo previsto.
 
 ## Estructura
 
