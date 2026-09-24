@@ -11,6 +11,7 @@ export class ImageQrField extends ImageField {
         this.orm = useService("orm");
         this.busService = useService("bus_service");
         this.qrState = useState({
+            visible: false,
             loading: false,
             qrUrl: false,
             token: false,
@@ -27,14 +28,22 @@ export class ImageQrField extends ImageField {
         });
     }
 
-    async showQr() {
-        if (this.props.readonly || this.qrState.loading || this.qrState.qrUrl) {
+    async toggleQr() {
+        if (this.props.readonly) {
+            return;
+        }
+        if (this.qrState.visible) {
+            this.qrState.visible = false;
             return;
         }
         if (!this.props.record.resId) {
             this.notification.add("Guarde el registro antes de cargar una imagen por QR.", {
                 type: "warning",
             });
+            return;
+        }
+        this.qrState.visible = true;
+        if (this.qrState.loading || this.qrState.qrUrl) {
             return;
         }
         this.qrState.loading = true;
@@ -54,6 +63,7 @@ export class ImageQrField extends ImageField {
             await this.busService.addChannel(this.qrChannel);
             this.qrState.qrUrl = result.qr_url;
         } catch (error) {
+            this.qrState.visible = false;
             this.notification.add(error.message || "No se pudo generar el código QR.", {
                 type: "danger",
             });
@@ -69,6 +79,7 @@ export class ImageQrField extends ImageField {
                     this.busService.deleteChannel(this.qrChannel);
                     this.qrChannel = null;
                 }
+                this.qrState.visible = false;
                 this.qrState.qrUrl = false;
                 this.qrState.token = false;
                 this.lastURL = undefined;

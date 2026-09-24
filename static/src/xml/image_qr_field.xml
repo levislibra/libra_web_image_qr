@@ -16,11 +16,11 @@
                                 </button>
                             </t>
                         </FileUploader>
-                        <div class="o_image_qr_control position-relative" t-on-mouseenter="showQr">
-                            <button type="button" class="o_image_qr_button btn btn-light border-0 rounded-circle m-1 p-1" data-tooltip="Cargar desde el teléfono" aria-label="Cargar desde el teléfono">
+                        <div class="o_image_qr_control position-relative">
+                            <button type="button" class="o_image_qr_button btn btn-light border-0 rounded-circle m-1 p-1" t-on-click.stop="toggleQr" t-att-aria-expanded="qrState.visible ? 'true' : 'false'" t-att-data-tooltip="qrState.visible ? 'Ocultar QR' : 'Mostrar QR para cargar desde el teléfono'" t-att-aria-label="qrState.visible ? 'Ocultar QR' : 'Mostrar QR para cargar desde el teléfono'">
                                 <i t-att-class="qrState.loading ? 'fa fa-spinner fa-spin fa-fw' : 'fa fa-qrcode fa-fw'"/>
                             </button>
-                            <div t-if="qrState.qrUrl" class="o_image_qr_popover">
+                            <div t-if="qrState.visible and qrState.qrUrl" class="o_image_qr_popover">
                                 <img t-att-src="qrState.qrUrl" alt="Código QR para cargar imagen"/>
                                 <small>Escanee para tomar o cargar una foto</small>
                             </div>

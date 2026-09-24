@@ -81,8 +81,9 @@ puerto gevent configurado en Odoo.
 
 ### 1. Generar y escanear el QR
 
-Al posicionar el cursor sobre el icono QR se muestra el código correspondiente
-al campo de imagen:
+Al hacer clic en el icono QR se muestra el código correspondiente al campo de
+imagen. Otro clic en el mismo icono lo oculta, tanto en celular como en desktop.
+Al volver a mostrarlo se conserva el mismo código mientras no se haya utilizado:
 
 ![Código QR dentro del widget de imagen](static/description/image_qr_widget.png)
 
@@ -96,7 +97,7 @@ se puede elegir una imagen existente o utilizar la cámara:
 ### 3. Guardar y actualizar la imagen
 
 1. Abrir un registro guardado que tenga un campo con `widget="image"`.
-2. Posicionar el cursor sobre el icono QR.
+2. Hacer clic en el icono QR.
 3. Escanear el código desde el teléfono.
 4. Elegir una imagen o tomar una fotografía.
 5. Pulsar **Guardar imagen**.
